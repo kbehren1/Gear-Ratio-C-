@@ -1,6 +1,0 @@
-﻿  GearRatios.cpp
-E:\AdventOfCode\GearRatios\GearRatios.cpp(44,57): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-E:\AdventOfCode\GearRatios\GearRatios.cpp(55,57): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-E:\AdventOfCode\GearRatios\GearRatios.cpp(85,49): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-E:\AdventOfCode\GearRatios\GearRatios.cpp(96,49): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  GearRatios.vcxproj -> E:\AdventOfCode\GearRatios\x64\Debug\GearRatios.exe
