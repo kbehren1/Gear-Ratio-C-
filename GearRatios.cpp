@@ -13,8 +13,8 @@ int main()
     std::string Line2 = "";
     std::string Line3 = "";
     std::string input = "";      
-    int sum = 0;
-    int num = 0;
+    int partNumSum = 0;
+    int partNum = 0;
     size_t found = 0;
 
     std::ifstream Schematic("Schematic.txt");
@@ -25,7 +25,7 @@ int main()
         Line3 = input;
 
         found = 0;
-        num = 0;        
+        partNum = 0;        
 
         if (Line2 == "")
             continue;
@@ -43,8 +43,8 @@ int main()
                     }
                     searchLength = buildingNum.length() + 1;
                     if (Line1.substr(0, searchLength).find_first_of(symbolSearch) != std::string::npos || Line3.substr(0, searchLength).find_first_of(symbolSearch) != std::string::npos) {
-                        num = std::stoi(buildingNum);
-                        sum += num;
+                        partNum = std::stoi(buildingNum);
+                        partNumSum += partNum;
                     }
                 }
                 else {
@@ -61,8 +61,8 @@ int main()
                         Line2.substr(subBeginPos, 1).find_first_of(symbolSearch) != std::string::npos ||
                         Line2.substr(subBeginPos + searchLength - 1, 1).find_first_of(symbolSearch) != std::string::npos) {
 
-                        num = std::stoi(buildingNum);
-                        sum += num;
+                        partNum = std::stoi(buildingNum);
+                        partNumSum += partNum;
                     }
                     found = Line2.find_first_of(numSearch, beginPos + searchLength - 1);
                 }                
@@ -84,8 +84,8 @@ int main()
             }
             searchLength = buildingNum.length() + 1;
             if (Line2.substr(0, searchLength).find_first_of(symbolSearch) != std::string::npos) {
-                num = std::stoi(buildingNum);
-                sum += num;
+                partNum = std::stoi(buildingNum);
+                partNumSum += partNum;
             }
         }
         else {
@@ -101,14 +101,14 @@ int main()
                 Line3.substr(subBeginPos, 1).find_first_of(symbolSearch) != std::string::npos ||
                 Line3.substr(subBeginPos + searchLength - 1, 1).find_first_of(symbolSearch) != std::string::npos) {
 
-                num = std::stoi(buildingNum);
-                sum += num;
+                partNum = std::stoi(buildingNum);
+                partNumSum += partNum;
             }
             found = Line3.find_first_of(numSearch, beginPos + searchLength - 1);
         }
     }
 
-    std::cout << "The sum of the part numbers in the engine schematic is " << sum << '!';
+    std::cout << "The sum of the part numbers in the engine schematic is " << partNumSum << '!';
 }
 
 
