@@ -29,9 +29,6 @@ int compareNotFromBeginning(size_t &found, std::string Line2, std::string Line1,
 
     size_t subBeginPos = std::max(0, static_cast<int>(beginPos - 1));
 
-    if (buildingNum == "260")
-        std::cout << Line3.substr(0, searchLength).find_first_of(symbolSearch) << "\n";
-
     if (Line1.substr(std::min(subBeginPos, Line1.length()), searchLength).find_first_of(symbolSearch) != std::string::npos ||
         Line3.substr(subBeginPos, searchLength).find_first_of(symbolSearch) != std::string::npos ||
         Line2.substr(subBeginPos, 1).find_first_of(symbolSearch) != std::string::npos ||
