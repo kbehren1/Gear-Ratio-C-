@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 const std::string numSearch = "0123456789";
 
@@ -51,31 +52,159 @@ int searchForNum(std::string Line1, std::string Line2, std::string Line3) {
     return partNums;
 }
 
-int handleLastLine(std::string &Line1, std::string &Line2, std::string &Line3) {
-    setLines(Line1, Line2, Line3, "");
-    return searchForNum(Line1, Line2, Line3);
+int lookForNums(size_t& found, std::string Line1, std::string Line2, std::string Line3) {    
+    size_t findPeriod = 0;
+    bool validNum = false;
+    std::vector<int> nums;
+
+    std::string buildingNum = "";
+
+    // Search Line1
+    size_t searchPos = std::max(0, static_cast<int>(found - 3));
+    while (searchPos < found + 3) {
+        searchPos = Line1.find_first_of(numSearch, searchPos);
+        findPeriod = Line1.find_first_of('.', searchPos);
+        if (searchPos != std::string::npos) {
+            while (searchPos < findPeriod) {
+                buildingNum += Line1[searchPos];
+                
+                if (searchPos == found - 1 || searchPos == found || searchPos == found + 1)
+                    validNum = true;
+
+                searchPos = Line1.find_first_of(numSearch, searchPos + 1);
+            }
+        }
+
+        if (validNum)
+            nums.insert(nums.begin(), std::stoi(buildingNum));
+
+        buildingNum = "";
+        validNum = false;
+    }
+
+    // Search Line2 left side
+    searchPos = std::max(0, static_cast<int>(found - 3));
+    while (searchPos < found) {        
+        searchPos = Line2.find_first_of(numSearch, searchPos);
+        findPeriod = Line2.find_first_of('.', searchPos);
+        
+        if (searchPos != std::string::npos) {
+            while (searchPos < findPeriod && searchPos < found) {
+                buildingNum += Line2[searchPos];
+                
+                if (searchPos == found - 1)
+                    validNum = true;
+
+                searchPos = Line2.find_first_of(numSearch, searchPos + 1);
+            }
+        }
+        
+        if (validNum)
+            nums.insert(nums.begin(), std::stoi(buildingNum));
+
+        buildingNum = "";
+        validNum = false;
+    }
+
+    // Search Line2 right side
+    searchPos = std::max(0, static_cast<int>(found + 1));
+    while (searchPos < found + 3) {
+        searchPos = Line2.find_first_of(numSearch, searchPos);
+        findPeriod = Line2.find_first_of('.', searchPos);
+
+        if (searchPos != std::string::npos) {
+            while (searchPos < findPeriod) {
+                buildingNum += Line2[searchPos];
+                
+                if (searchPos == found + 1)
+                    validNum = true;
+
+                searchPos = Line2.find_first_of(numSearch, searchPos + 1);
+            }
+        }
+
+        if (validNum)
+            nums.insert(nums.begin(), std::stoi(buildingNum));
+
+        buildingNum = "";
+        validNum = false;
+    }
+
+    // Search Line3
+    searchPos = std::max(0, static_cast<int>(found - 3));
+    while (searchPos < found + 3) {
+        searchPos = Line3.find_first_of(numSearch, searchPos);
+        findPeriod = Line3.find_first_of('.', searchPos);
+        if (searchPos != std::string::npos) {
+            while (searchPos < findPeriod) {
+                buildingNum += Line3[searchPos];
+                
+                if (searchPos == found - 1 || searchPos == found || searchPos == found + 1)
+                    validNum = true;
+
+                searchPos = Line3.find_first_of(numSearch, searchPos + 1);
+            }
+        }
+
+        if (validNum)
+            nums.insert(nums.begin(), std::stoi(buildingNum));
+
+        buildingNum = "";
+        validNum = false;
+    }
+
+    if (nums.size() == 2)
+        return nums.at(0) * nums.at(1);
+    else
+        return 0;
 }
 
-int processSchematic() {
+int searchForStars(std::string Line1, std::string Line2, std::string Line3) {
+    size_t found = 0;
+    unsigned int gearRatio = 0;
+
+    found = Line2.find_first_of('*');
+
+    while (found != std::string::npos) {
+        gearRatio += lookForNums(found, Line1, Line2, Line3);
+        found = Line2.find_first_of('*', found + 1);
+    }
+
+    return gearRatio;
+}
+
+void handleLastLine(std::string& Line1, std::string& Line2, std::string& Line3, int& partNumSum, unsigned int& gearRatioSum) {
+    setLines(Line1, Line2, Line3, "");
+    partNumSum += searchForNum(Line1, Line2, Line3);
+    gearRatioSum += searchForStars(Line1, Line2, Line3);
+}
+
+void processSchematic(int &partNumSum, unsigned int &gearRatioSum) {
     std::string Line1(140, ' ');
     std::string Line2(140, ' ');
     std::string Line3(140, ' ');
     std::string input = "";
-    int partNumSum = 0;
 
     std::ifstream Schematic("Schematic.txt");
 
     while (std::getline(Schematic, input)) {
         setLines(Line1, Line2, Line3, input);
         partNumSum += searchForNum(Line1, Line2, Line3);
+        gearRatioSum += searchForStars(Line1, Line2, Line3);
     }
 
-    return partNumSum + handleLastLine(Line1, Line2, Line3);
+    handleLastLine(Line1, Line2, Line3, partNumSum, gearRatioSum);
 }
 
 int main()
 {   
-    std::cout << "The sum of the part numbers in the engine schematic is " << processSchematic() << '!';
+    int partNumSum = 0;
+    unsigned int gearRatioSum = 0;
+
+    processSchematic(partNumSum, gearRatioSum);
+
+    std::cout << "The sum of the part numbers in the engine schematic is " << partNumSum << "!\n";
+    std::cout << "The sum of the gear ratios in the engine schematic is " << gearRatioSum << '!';
 }
 
 
